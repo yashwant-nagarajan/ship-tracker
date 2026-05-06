@@ -8,10 +8,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Explicitly allows the robot to save files
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Option 2: Fetches all history
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,6 +33,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@://github.com"
           git add ships.xlsx
+          # Option 3: Force the push using the internal GITHUB_TOKEN
           git commit -m "Automated update of ship locations" || exit 0
-          git push
-
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git main
