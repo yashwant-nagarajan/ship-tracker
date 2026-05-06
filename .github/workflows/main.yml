@@ -1,20 +1,22 @@
 name: Update Ship Locations
 on:
   schedule:
-    - cron: "0 */6 * * *" # Runs every 6 hours
-  workflow_dispatch: # Allows you to click the button manually
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Explicitly allows the robot to save files
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -29,6 +31,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@://github.com"
           git add ships.xlsx
-          git commit -m "Automated update of ship locations" || echo "No changes to commit"
+          git commit -m "Automated update of ship locations" || exit 0
           git push
 
