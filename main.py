@@ -27,7 +27,7 @@ async def get_ship_locations():
         start_time = datetime.now()
         
         # Listen for 60 seconds to catch as many ships as possible
-        while (datetime.now() - start_time).seconds < 60:
+        while (datetime.now() - start_time).seconds < 600:
             try:
                 message = json.loads(await websocket.recv())
                 if message.get("MessageType") == "PositionReport":
