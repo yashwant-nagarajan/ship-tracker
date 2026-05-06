@@ -10,7 +10,7 @@ API_KEY = os.getenv("AIS_API_KEY")
 EXCEL_FILE = "ships.xlsx"
 SHIP_LIST = [
     "RED NOVA", "AZURE NOVA", "CELESTE NOVA", "ASIAN GLORY", "HORTEN",
-    "CAPE TOUCAN", "CAPE KORI", "CAPE SWAN", "CAPE CYGNET", "CAPE HARRIER"
+    "CAPE TOUCAN", "CAPE KORI", "CAPE SWAN", "CAPE CYGNET", "CAPE HARRIER", "C FORCE"
 ]
 
 async def get_ship_locations():
