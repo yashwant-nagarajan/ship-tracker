@@ -1,19 +1,26 @@
 name: Update Ship Locations
+
+# This removes the Node.js 20 deprecation warnings
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   schedule:
-    - cron: "0 */6 * * *"
-  workflow_dispatch:
+    - cron: "0 */6 * * *" # Runs every 6 hours
+  workflow_dispatch:      # Allows you to click the "Run workflow" button
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # This gives the robot permission to save the Excel file
     permissions:
       contents: write
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Option 2: Fetches all history
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,16 +30,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Run ship tracker script
         env:
           AIS_API_KEY: ${{ secrets.AIS_API_KEY }}
         run: python main.py
 
-      - name: Commit and push changes
+      - name: Save updated Excel to repository
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@://github.com"
+          git config --local user.email "github-actions[bot]@://github.com"
+          git config --local user.name "github-actions[bot]"
           git add ships.xlsx
-          # Option 3: Force the push using the internal GITHUB_TOKEN
+          # If no ships are found/nothing changes, this won't crash the workflow
           git commit -m "Automated update of ship locations" || exit 0
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git main
+          git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git" HEAD:main --force
